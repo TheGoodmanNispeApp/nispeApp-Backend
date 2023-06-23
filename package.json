@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/TheGoodmanNispeApp/nispeApp-Backend/issues"
   },
-  "homepage": "https://github.com/TheGoodmanNispeApp/nispeApp-Backend#readme"
+  "homepage": "https://github.com/TheGoodmanNispeApp/nispeApp-Backend#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.5",
+    "@commitlint/config-conventional": "^17.6.5",
+    "husky": "^8.0.3"
+  }
 }
