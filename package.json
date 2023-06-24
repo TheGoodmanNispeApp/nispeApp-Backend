@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "tsc && node dist/server.js",
     "test": "jest",
+    "test:coverage": "npm test -- --coverage",
     "prepare": "husky install"
   },
   "repository": {
