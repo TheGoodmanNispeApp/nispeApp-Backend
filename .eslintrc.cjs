@@ -17,5 +17,6 @@ module.exports = {
     'object-curly-spacing': ['Error', 'always'],
     'new-cap': ['error', { capIsNewExceptions: ['express.Router'] }],
     'operator-linebreak': ['error', 'after'],
+    '@typescript-eslint/no-misused-promises': 'error',
   },
 };
