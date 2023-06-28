@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
-import { plantTelemetryMock } from '../../../../../__mocks__/plant-telemetry.mock.js';
-import { PlantTelemetry } from '../../plants-schema.js';
-import { createNispePlantTelemetryController } from '../nispe-plant-controller.js';
+import {
+  plantTelemetryMock,
+  telemetryListMock,
+} from '../../../../../__mocks__/plant-telemetry.mock.js';
+import { PlantTelemetry, TelemetryResponse } from '../../plants-schema.js';
+import {
+  createNispePlantTelemetryController,
+  retrieveNispePlantTelemetryController,
+} from '../nispe-plant-controller.js';
 import { NispePlantTelemetryModel } from '../nispe-plants-schema.js';
 
 beforeEach(() => {
@@ -56,6 +62,41 @@ describe('Given a Nispe entity controllers', () => {
           { plantTelemetry: PlantTelemetry } | { msg: string },
           { id: string }
         >,
+        next,
+      );
+      await expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('when a request to get a plant telemetry is made', () => {
+    const request = {} as Partial<Request>;
+
+    const response = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response>;
+
+    NispePlantTelemetryModel.find = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValue(telemetryListMock),
+    });
+
+    test('and it is successfull then telemetry should be returned', async () => {
+      await retrieveNispePlantTelemetryController(
+        request as Request,
+        response as Response<TelemetryResponse | { msg: string }>,
+        next,
+      );
+      await expect(response.json).toHaveBeenCalledWith({
+        telemetry: telemetryListMock,
+      });
+    });
+    test('and it fails then an error should be thrown', async () => {
+      NispePlantTelemetryModel.find = jest.fn().mockReturnValue({
+        exec: jest.fn().mockRejectedValue(null),
+      });
+      await retrieveNispePlantTelemetryController(
+        request as Request,
+        response as Response<TelemetryResponse | { msg: string }>,
         next,
       );
       await expect(next).toHaveBeenCalled();

@@ -9,6 +9,8 @@ export type PlantTelemetry = {
   };
 };
 
+export type TelemetryResponse = { telemetry: PlantTelemetry[] };
+
 export const plantTelemetrySchema = new Schema<PlantTelemetry>({
   timestamp: Number,
   measurements: {
