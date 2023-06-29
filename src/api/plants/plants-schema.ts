@@ -9,7 +9,7 @@ export type PlantTelemetry = {
   };
 };
 
-export type TelemetryResponse = { telemetry: PlantTelemetry[] };
+export type TelemetryResponse = PlantTelemetry[];
 
 export const plantTelemetrySchema = new Schema<PlantTelemetry>({
   timestamp: Number,
