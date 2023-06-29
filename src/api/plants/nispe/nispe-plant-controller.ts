@@ -4,13 +4,13 @@ import { NispePlantTelemetryModel } from './nispe-plants-schema.js';
 
 export const createNispePlantTelemetryController: RequestHandler<
   unknown,
-  { plantTelemetry: PlantTelemetry } | { msg: string },
+  PlantTelemetry | { msg: string },
   PlantTelemetry,
   unknown
 > = async (req, res, next) => {
   try {
     const plantTelemetry = await NispePlantTelemetryModel.create(req.body);
-    return res.status(201).json({ plantTelemetry });
+    return res.status(201).json(plantTelemetry);
   } catch (error) {
     next(error);
   }
@@ -22,7 +22,7 @@ export const retrieveNispePlantTelemetryController: RequestHandler<
 > = async (_req, res, next) => {
   try {
     const plantTelemetry = await NispePlantTelemetryModel.find({}).exec();
-    return res.json({ telemetry: plantTelemetry });
+    return res.json(plantTelemetry);
   } catch (error) {
     next(error);
   }

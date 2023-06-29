@@ -35,14 +35,11 @@ describe('Given a Nispe entity controllers', () => {
       await createNispePlantTelemetryController(
         request as Request<
           unknown,
-          { plantTelemetry: PlantTelemetry } | { msg: string },
+          PlantTelemetry | { msg: string },
           PlantTelemetry,
           unknown
         >,
-        response as Response<
-          { plantTelemetry: PlantTelemetry } | { msg: string },
-          { id: string }
-        >,
+        response as Response<PlantTelemetry | { msg: string }, { id: string }>,
         next,
       );
       await expect(response.status).toHaveBeenCalledWith(201);
@@ -54,14 +51,11 @@ describe('Given a Nispe entity controllers', () => {
       await createNispePlantTelemetryController(
         request as Request<
           unknown,
-          { plantTelemetry: PlantTelemetry } | { msg: string },
+          PlantTelemetry | { msg: string },
           PlantTelemetry,
           unknown
         >,
-        response as Response<
-          { plantTelemetry: PlantTelemetry } | { msg: string },
-          { id: string }
-        >,
+        response as Response<PlantTelemetry | { msg: string }, { id: string }>,
         next,
       );
       await expect(next).toHaveBeenCalled();
@@ -86,9 +80,7 @@ describe('Given a Nispe entity controllers', () => {
         response as Response<TelemetryResponse | { msg: string }>,
         next,
       );
-      await expect(response.json).toHaveBeenCalledWith({
-        telemetry: telemetryListMock,
-      });
+      await expect(response.json).toHaveBeenCalledWith(telemetryListMock);
     });
     test('and it fails then an error should be thrown', async () => {
       NispePlantTelemetryModel.find = jest.fn().mockReturnValue({
