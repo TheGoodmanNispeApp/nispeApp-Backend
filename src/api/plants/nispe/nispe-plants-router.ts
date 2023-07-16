@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   createNispePlantTelemetryController,
+  retrieveLatestNispePlantTelemetryController,
   retrieveNispePlantTelemetryController,
 } from './nispe-plant-controller.js';
 
@@ -10,3 +11,5 @@ nispeRouter
   .route('/')
   .get(retrieveNispePlantTelemetryController)
   .post(createNispePlantTelemetryController);
+
+nispeRouter.route('/latest').get(retrieveLatestNispePlantTelemetryController);

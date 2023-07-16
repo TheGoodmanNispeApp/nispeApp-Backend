@@ -27,3 +27,21 @@ export const retrieveNispePlantTelemetryController: RequestHandler<
     next(error);
   }
 };
+
+export const retrieveLatestNispePlantTelemetryController: RequestHandler<
+  unknown,
+  PlantTelemetry | { msg: string }
+> = async (_req, res, next) => {
+  try {
+    const plantTelemetry = await NispePlantTelemetryModel.findOne()
+      .sort({
+        timestamp: -1,
+      })
+      .exec();
+    if (plantTelemetry) {
+      return res.json(plantTelemetry);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
