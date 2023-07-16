@@ -6,6 +6,7 @@ import {
 import { PlantTelemetry, TelemetryResponse } from '../../plants-schema.js';
 import {
   createNispePlantTelemetryController,
+  retrieveLatestNispePlantTelemetryController,
   retrieveNispePlantTelemetryController,
 } from '../nispe-plant-controller.js';
 import { NispePlantTelemetryModel } from '../nispe-plants-schema.js';
@@ -89,6 +90,32 @@ describe('Given a Nispe entity controllers', () => {
       await retrieveNispePlantTelemetryController(
         request as Request,
         response as Response<TelemetryResponse | { msg: string }>,
+        next,
+      );
+      await expect(next).toHaveBeenCalled();
+    });
+    test('and it is the latest telemetry, then the most recent telemetry should be returned', async () => {
+      NispePlantTelemetryModel.findOne = jest.fn().mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(telemetryListMock[0]),
+        }),
+      });
+      await retrieveLatestNispePlantTelemetryController(
+        request as Request,
+        response as Response<PlantTelemetry | { msg: string }>,
+        next,
+      );
+      await expect(response.json).toHaveBeenCalledWith(telemetryListMock[0]);
+    });
+    test('and it is the latest telemetry, and it fails then an error should be thrown', async () => {
+      NispePlantTelemetryModel.findOne = jest.fn().mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          exec: jest.fn().mockRejectedValue(null),
+        }),
+      });
+      await retrieveLatestNispePlantTelemetryController(
+        request as Request,
+        response as Response<PlantTelemetry | { msg: string }>,
         next,
       );
       await expect(next).toHaveBeenCalled();
