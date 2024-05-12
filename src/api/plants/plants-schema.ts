@@ -1,5 +1,10 @@
 import { Schema } from 'mongoose';
 
+export type PlantHistoricalTelemetryRequest = {
+  startTs: number;
+  endTs: number;
+};
+
 export type PlantTelemetry = {
   timestamp: number;
   measurements: {

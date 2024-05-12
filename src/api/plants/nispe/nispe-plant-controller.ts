@@ -1,5 +1,9 @@
 import { RequestHandler } from 'express';
-import { PlantTelemetry, TelemetryResponse } from '../plants-schema';
+import {
+  PlantHistoricalTelemetryRequest,
+  PlantTelemetry,
+  TelemetryResponse,
+} from '../plants-schema';
 import { NispePlantTelemetryModel } from './nispe-plants-schema.js';
 
 export const createNispePlantTelemetryController: RequestHandler<
@@ -38,6 +42,24 @@ export const retrieveLatestNispePlantTelemetryController: RequestHandler<
         timestamp: -1,
       })
       .exec();
+    if (plantTelemetry) {
+      return res.json(plantTelemetry);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const retrieveHistoricaltNispePlantTelemetryController: RequestHandler<
+  unknown,
+  TelemetryResponse | { msg: string },
+  PlantHistoricalTelemetryRequest
+> = async (req, res, next) => {
+  const { startTs, endTs } = req.body;
+  try {
+    const plantTelemetry = await NispePlantTelemetryModel.find({
+      timestamp: { $gte: startTs, $lte: endTs },
+    }).exec();
     if (plantTelemetry) {
       return res.json(plantTelemetry);
     }

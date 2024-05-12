@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 import {
+  filteredHistoricalTelemetry,
   plantTelemetryMock,
   telemetryListMock,
 } from '../../../../../__mocks__/plant-telemetry.mock.js';
 import { PlantTelemetry, TelemetryResponse } from '../../plants-schema.js';
 import {
   createNispePlantTelemetryController,
+  retrieveHistoricaltNispePlantTelemetryController,
   retrieveLatestNispePlantTelemetryController,
   retrieveNispePlantTelemetryController,
 } from '../nispe-plant-controller.js';
@@ -116,6 +118,36 @@ describe('Given a Nispe entity controllers', () => {
       await retrieveLatestNispePlantTelemetryController(
         request as Request,
         response as Response<PlantTelemetry | { msg: string }>,
+        next,
+      );
+      await expect(next).toHaveBeenCalled();
+    });
+    test('and it is the historical telemetry, then the telemetry between the interval should be returned', async () => {
+      const historicalRequest = {
+        body: { startTs: 221143, endTs: 331143 },
+      } as Partial<Request>;
+      NispePlantTelemetryModel.find = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(filteredHistoricalTelemetry),
+      });
+      await retrieveHistoricaltNispePlantTelemetryController(
+        historicalRequest as Request,
+        response as Response<TelemetryResponse | { msg: string }>,
+        next,
+      );
+      await expect(response.json).toHaveBeenCalledWith(
+        filteredHistoricalTelemetry,
+      );
+    });
+    test('and it is the historical telemetry, and it fails, then an error should be thrown', async () => {
+      const historicalRequest = {
+        body: { startTs: 221143, endTs: 331143 },
+      } as Partial<Request>;
+      NispePlantTelemetryModel.find = jest.fn().mockReturnValue({
+        exec: jest.fn().mockRejectedValue(null),
+      });
+      await retrieveHistoricaltNispePlantTelemetryController(
+        historicalRequest as Request,
+        response as Response<TelemetryResponse | { msg: string }>,
         next,
       );
       await expect(next).toHaveBeenCalled();
